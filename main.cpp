@@ -7,7 +7,7 @@
 //We're going to implement a ray first.
 //the ray will be shot at each pixel
 //Need to figure out how to map to viewport
-
+//test
 //TODO add asserts for the screen aswell
 struct vec2
 {

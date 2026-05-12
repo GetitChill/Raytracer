@@ -4,6 +4,7 @@
 #include <cassert>
 #include <cmath>
 
+//All of the classes. Let the compiler create it. The rule of zero
 struct vec3
 {
 	vec3(float vecx,float vecy,float vecz) : x{vecx},y{vecy},z{vecz}
@@ -18,6 +19,8 @@ struct vec3
 	float y;
 	float z;
 
+
+
 	vec3 operator+ (vec3 v)
 	{
 		return vec3(x+v.x, y+v.y, z+v.z);
@@ -27,15 +30,13 @@ struct vec3
 		return vec3(x-v.x, y-v.y, z-v.z);
 	}
 	//Scaler
-	vec3 operator* (vec3 v)
+	vec3 operator* (int scale)
 	{
-		return vec3(x*v.x, y*v.y, z*v.z);
+		return vec3(x*scale, y*scale, z*scale);
 	}
-	//normalize
-	void normalize() //how can I represent normalization
-	{
-	//why is this wrong?
 
+	void normalize()
+	{
 		float len = (x*x) + (y*y) + (z*z);
 		len = std::sqrt(len);
 
@@ -68,47 +69,25 @@ struct color
 };
 
 
-struct pixel //Wait so wouldn't all of my pixels be a distance of 1 away from the camera (literally all of them?)'
+struct pixel
 {
-	pixel(int loc_x, int loc_y,int loc_z) : loc(loc_x, loc_y,loc_z)
+	pixel(float loc_x, float loc_y,float loc_z) : loc(loc_x, loc_y,loc_z)
 	{
 
 	}
+
 	vec3 loc;
 	color c;
-
 };
 struct canvas
 {
-	canvas(int canvas_area, color population_color, int canvas_width, int canvas_height)
-	{
-		for(int i = 0; i < canvas_height; ++i)
-		{
-			for(int j = 0; j < canvas_width; ++j)
-			{
-				canvas_final_draw.push_back({i,j,1});
-			}
-		}
-	}
-	std::vector<pixel> canvas_final_draw;
+	canvas() = default;
+	static const int canvas_width {50};
+	static const int canvas_height {20};
+	static const int total_index = canvas_width * canvas_height;
 
-	void putpixel(int pixel_x, int pixel_y, color col, int canvas_width, int canvas_height)
-	{
-		int counter = 0;
-		for(int i = 0; i < canvas_height; ++i)
-		{
-			for(int j = 0; j < canvas_width; ++j)
-			{
-				if (canvas_final_draw[counter].loc.x == pixel_x && canvas_final_draw[counter].loc.y == pixel_y )
-				{
-					canvas_final_draw[counter].c = col;
-					break;
-				}
-				counter++;
-			}
-		}
-	}
 };
+
 
 struct viewport{
 	//We're going to have to map to a 2d board, and our image to render to the canvas is quite literally
@@ -118,68 +97,85 @@ struct viewport{
 	const float height = 1.0f;
 	const float distance = 1.0f;
 
-
-
 	//Viewport is the 2d shit, and I think canvas is for generating the
-	//So the viewport is 3d aswell, just has a constant z of 1; so we'll do something about that.'
 
-	//How am I going to get direction I wonder IDK.
-
+	//Why is this getting converted to an int? I have no idea :(
 
 	void map_viewport_to_canvas(const canvas c)
 	{
-		int x{1000};
-		//This is where we're going to map our canvas coordinates to our viewport, so I'm just going to loop through canvas and push_back the transformed values.
+		const float scaler_x = width / c.canvas_width;
+		const float scaler_y = height / c.canvas_height;
+		for(float i = 0.0f; i < c.canvas_width; ++i)
+		{
+			for(float j = 0.0f; j < c.canvas_height; ++j)
+			{
+				viewport_final_draw.push_back({i* scaler_x,j * scaler_y,1});
+			}
+		}
 	}
 
 
 	std::vector<pixel> viewport_final_draw;
 
-	//this the ray equation o + t(v-o)
 };
+
+void ray_target_pixel(vec3 viewport_pixel)
+	{
+		//Normalize, so we take a normalized vector, then scale it using t, and rays can go on forever
+
+		viewport_pixel.normalize();
+
+		//t * D - which is a normalized vector for the point on the viewport.
+		//this feels like it going to be a while loop, until something happens to the ray. I just don't know what tho.'
+		//this isn't exactly what I want, I still don't even know a minimal piece of this that I can test yet :(
+
+		//So this ray thing is pretty much entirely dependent on intersection so I'm just going to leave this here.'
+
+		//So I'm trying to simulate a ray here. But it's not working out all that great.
+		float t = .1f;
+		while(t <= 5.0f) //I don't know what to use instead of this 5.0 thingy honestly.
+		{
+			viewport_pixel = viewport_pixel * t;
+		}
+	}
 
 int main()
 {
-	color red(255,0,0);
-
-
-	//So this shit should be going in my canvas object, but whatever.
-	static const int canvas_width = 50;
-	static const int canvas_height = 20;
-	static const int total_index = canvas_width * canvas_height;
-
-	canvas canvas_object(total_index, red, canvas_width, canvas_height);
-
-	vec3 origin(10,10,10);
-	std::cout << origin.x << " " <<origin.y << " " <<origin.z << "\n" ;
-
+	canvas c;
+	viewport v;
 	std::ofstream file;
 	file.open("image.ppm");
 
+	//there's got to be a better way to use the canvas values than just hardcoding them.
 	file << "P3\n";
-	file << canvas_width << " " << canvas_height << "\n";
+	file << 50 << " " << 20 << "\n";
 	file << "255\n";
-
-	for(unsigned int i = 0; i < total_index; ++i)
-	{
-		file << canvas_object.canvas_final_draw[i].c.r << " " << canvas_object.canvas_final_draw[i].c.g << " " << canvas_object.canvas_final_draw[i].c.b  << " ";
-	}
-
 	file.close();
-	for(unsigned int i = 0; i < total_index; ++i)
-	{
-
-		std::cout << canvas_object.canvas_final_draw[i].loc.x << " ";
-		std::cout << canvas_object.canvas_final_draw[i].loc.y << "\n";
-
-	}
 
 
-	vec3 a(3,1,2);
-	a.normalize();
-	std::cout << a.x << " " << a.y << " " << a.z;
 
-	std::cout << "\n " <<std::sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
+
+	//I want this thing to be done on each point of the veiwport so ...
+	//This is just going to be for a single point on our viewport.
+	//We're going to be changing this thing maybe?
+
+	v.map_viewport_to_canvas(c);
+
+
+	//ray_target_pixel(v.viewport_final_draw[0].loc);
+
+	//std::cout << v.viewport_final_draw[0].loc.x << " " << v.viewport_final_draw[0].loc.y << " " << v.viewport_final_draw[0].loc.z << "\n ";
+
+
 }
+/*
+ * v.map_viewport_to_canvas(c);
+	for(int i = 0; i < c.total_index; i++)
+	{
+		std::cout << v.viewport_final_draw[i].loc.x << " " << v.viewport_final_draw[i].loc.y << " " << v.viewport_final_draw[i].loc.z << "\n ";
+	}
+ *
+ */
+
 
 

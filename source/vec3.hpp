@@ -3,7 +3,10 @@
 namespace raytracer{
 	struct vec3
 	{
-		vec3(float vecx,float vecy,float vecz);
+		inline vec3(float vecx,float vecy,float vecz) : x{vecx},y{vecy},z{vecz}
+		{
+		
+		}
 		vec3() = delete;
 		float x;
 		float y;

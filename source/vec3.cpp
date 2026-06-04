@@ -3,12 +3,10 @@
 
 //I didn't want to deal with the headache of doing raytracer::vec3 ... 
 
-using namespace raytracer;
 
-vec3 vec3::operator+(vec3)
+raytracer::vec3 raytracer::vec3::operator+(const raytracer::vec3& v)
 {
 	//this is just a test;
-	vec3 a(1.0,1.0,1.0);
-	return a;
+	return vec3 (1.0f, 1.0f, 1.0f);
 
 }

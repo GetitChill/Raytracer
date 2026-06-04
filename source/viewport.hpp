@@ -1,3 +1,6 @@
+#pragma once
+
+
 #include "canvas.hpp"
 #include "pixel.hpp"
 #include "vec3.hpp"

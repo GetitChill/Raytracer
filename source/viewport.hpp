@@ -6,7 +6,7 @@
 namespace raytracer{
 	struct viewport{
 
-		vec3 camera{0,0,0};
+		vec3 camera{0.0f,0.0f,0.0f};
 
 		const float width = 1.0f;
 		const float height = 1.0f;

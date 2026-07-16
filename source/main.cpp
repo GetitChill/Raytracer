@@ -51,7 +51,7 @@ vec3 convert_pixels_to_viewport(vec3 canvas_cords, int canvas_w, int canvas_h, v
 	return vec3(canvas_cords.x * (viewport_points.x/canvas_w),canvas_cords.y * (viewport_points.y/canvas_h),1); 
 }
 
-
+/*
 bool test_code( vec3 canvas_pixel_collision ,sphere circ, vec3 viewport_dimentions, int width, int height)
 {
 
@@ -105,6 +105,7 @@ bool test_code( vec3 canvas_pixel_collision ,sphere circ, vec3 viewport_dimentio
 	}
 	
 }
+*/
 int main()
 {
 
@@ -134,7 +135,7 @@ int main()
 	std::string sample = "255 0 0 ";
 	
 
-
+/*
 	for(int i = 0; i < width; ++i)
 	{
 		for(int j = 0; j< height; ++j)
@@ -149,7 +150,7 @@ int main()
 			}
 		}
 	}
-
+*/
 	file.close();
 	std::cout << "Correctly Compiled using make" << std::endl;
 

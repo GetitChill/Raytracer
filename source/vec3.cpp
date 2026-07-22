@@ -39,6 +39,26 @@ float raytracer::vec3_mag(vec3 main_v)
 	float d = (main_v.x * main_v.x)  + (main_v.y * main_v.y) + (main_v.z * main_v.z);
 	float m = std::sqrt(d);
 	return (m);
-	
 }
 
+//I'm not really sure how to normalize a vector.
+raytracer::vec3 raytracer::vec3_normalized(vec3 main_v)
+{
+	float length = vec3_mag(main_v);
+
+	return vec3(main_v.x / length, main_v.y / length, main_v.z / length );
+}
+
+//
+float raytracer::vec3_dotproduct(vec3 first, vec3 second)
+{
+	return (first.x * second.x + first.y * second.y + first.z * second.z);
+}
+
+raytracer::vec3 raytracer::vec3_crossproduct(vec3 first, vec3 second)
+{
+	return vec3(
+			first.y * second.z - first.z * second.y,
+			first.z * second.x - first.x * second.z, 
+			first.x * second.y - first.y * second.x );
+}

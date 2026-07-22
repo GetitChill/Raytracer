@@ -11,7 +11,8 @@ namespace raytracer{
 		{
 		
 		}
-		vec3() = delete;
+		//We'll just use default for now cause delete is causing problems'
+		vec3() = default;
 
 
 		//do stand alone
@@ -29,5 +30,7 @@ namespace raytracer{
 	vec3 vec3_normalize(vec3 lhs, vec3 rhs);
 	vec3 vec3_negate(vec3 main_vec); //finds the opposite vector
 	float vec3_mag(vec3 main_v);
-
+	vec3 vec3_normalized(vec3 main_v); 
+ 	float vec3_dotproduct(vec3 first, vec3 second);
+	vec3 vec3_crossproduct(vec3 first, vec3 second); //perpendicular 
 }

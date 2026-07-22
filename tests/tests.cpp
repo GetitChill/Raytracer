@@ -11,7 +11,6 @@ TEST_CASE("Vec3 - point") {
 	REQUIRE_THAT( v.y, Catch::Matchers::WithinAbs(-4.2, .0005));
 	REQUIRE_THAT( v.z, Catch::Matchers::WithinAbs(3.1, .0005));
 
-	INFO("You failed in making the point/tuple.");
 }
 
 TEST_CASE("Vec3 - Vector")
@@ -23,8 +22,6 @@ TEST_CASE("Vec3 - Vector")
 	REQUIRE_THAT( v.z, Catch::Matchers::WithinAbs(3.1, .0005));
 
 
-
-	INFO("You failed to make a vector");
 }
 
 
@@ -43,19 +40,17 @@ TEST_CASE("ADDING TWO VECS")
 
 
 
-
-	INFO("YOU FAILED TO ADD TWO VECTORS");
 }
 
 
 //I'm not stressing about the difference between a tuple and a vector..
-TEST_CAST("SUBTRACTING VECS")
+TEST_CASE("SUBTRACTING VECS")
 {
-	vec a(3.0f,2.0f,1.0f);
-	vec b(5.0f,6.0f,7.0f);
+	vec3 a(3.0f,2.0f,1.0f);
+	vec3 b(5.0f,6.0f,7.0f);
 
 
-	vec3 c = vec3_subtraction(a,b);
+	vec3 c = vec3_subtract(a,b);
 
 	REQUIRE_THAT( c.x, Catch::Matchers::WithinAbs(-2.0f, .0005));
 	REQUIRE_THAT( c.y, Catch::Matchers::WithinAbs(-4.0f, .0005));
@@ -65,7 +60,7 @@ TEST_CAST("SUBTRACTING VECS")
 TEST_CASE("Negating VEC")
 {
 	vec3 a(1.0, -2.0,3.0);
-	a.vec3_negate(a);
+	a = vec3_negate(a);
 	REQUIRE_THAT( a.x, Catch::Matchers::WithinAbs(-1.0f, .0005));
 	REQUIRE_THAT( a.y, Catch::Matchers::WithinAbs(2.0f, .0005));
 	REQUIRE_THAT( a.z, Catch::Matchers::WithinAbs(-3.0f, .0005));
@@ -76,16 +71,61 @@ TEST_CASE("Negating VEC")
  TEST_CASE("SCALING VEC")
 {
 	vec3 a(1.0, -2.0,3.0);
-	a.vec3_scale(a, 3.5f);
+	a = vec3_scale(a, 3.5f);
 	REQUIRE_THAT( a.x, Catch::Matchers::WithinAbs(3.5f, .0005));
 	REQUIRE_THAT( a.y, Catch::Matchers::WithinAbs(-7.0f, .0005));
 	REQUIRE_THAT( a.z, Catch::Matchers::WithinAbs(10.5f, .0005));
 }
-//I don't like how we are calling a funciton on an object then passing it as a parameter. 
+
+
+
 TEST_CASE("Magnitude of vector")
 {
 	vec3 a(1.0, 2.0,3.0);
-	float v = a.vec3_mag(a);
+	float v = vec3_mag(a);
 	REQUIRE_THAT( v, Catch::Matchers::WithinAbs(std::sqrt(14), .0005));
+
+	vec3 b (1.0,0.0,0.0);
+	v = vec3_mag(b);
+	REQUIRE_THAT( v, Catch::Matchers::WithinAbs(1.0f, .0005));
+
 }
 
+
+TEST_CASE("Normalized vector")
+{
+	vec3 a(4.0, 0.0, 0.0);
+	vec3 norm_a = vec3_normalized(a);
+	REQUIRE_THAT(norm_a.x ,Catch::Matchers::WithinAbs(1.0f, .0005) );
+	REQUIRE_THAT(norm_a.y ,Catch::Matchers::WithinAbs(0.0f, .0005) );
+	REQUIRE_THAT(norm_a.z ,Catch::Matchers::WithinAbs(0.0f, .0005) );
+	
+
+	float test_mag = vec3_mag(norm_a);
+	REQUIRE_THAT(test_mag ,Catch::Matchers::WithinAbs(1.0f, .0005) );
+}
+
+
+TEST_CASE("Dot product")
+{
+	vec3 a(1.0,2.0,3.0);
+	vec3 b(2.0,3.0,4.0);
+
+	float dp = vec3_dotproduct(a,b);
+	REQUIRE_THAT(dp, Catch::Matchers::WithinAbs(20.0f, .0005) );
+}
+
+
+TEST_CASE("cross product")
+{
+	vec3 a(1.0,2.0,3.0);
+	vec3 b(2.0,3.0,4.0);
+
+	vec3 c = vec3_crossproduct(a,b);	
+ 	REQUIRE_THAT(c.x ,Catch::Matchers::WithinAbs(-1.0f, .0005) );
+	REQUIRE_THAT(c.y ,Catch::Matchers::WithinAbs(2.0f, .0005) );
+	REQUIRE_THAT(c.z ,Catch::Matchers::WithinAbs(-1.0f, .0005) );
+
+
+
+}

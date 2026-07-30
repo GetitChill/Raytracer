@@ -26,8 +26,7 @@ raytracer::vec3 raytracer::vec3_subtract(vec3 lhs, vec3 rhs)
 //I may want to actually parameter in the future. I'm not sure.
 raytracer::vec3 raytracer::vec3_negate(vec3 main_vec)
 {
-	return vec3(main_vec.x * -1, main_vec.y * -1,main_vec.z * -1);
-
+	return vec3(main_vec.x * -1.0f, main_vec.y * -1.0f,main_vec.z * -1.0f);
 }
 
 raytracer::vec3 raytracer::vec3_scale(vec3 lhs, float scale)

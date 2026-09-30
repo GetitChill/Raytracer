@@ -2,9 +2,14 @@
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
 #include "vec3.hpp"
 #include "canvas.hpp"
-//I need to find a way to not be testing equality float.
+#include "color.hpp"
 
+//Will I need to include ifstream here? to test our file stream?
+#include <fstream>
+#include <string>
 using namespace raytracer;
+using namespace std;
+
 TEST_CASE("Vec3 - point") {
 	vec3 v(4.0,-4.2,3.1);
 	REQUIRE_THAT( v.x, Catch::Matchers::WithinAbs(4.0, .0005));
@@ -178,16 +183,141 @@ TEST_CASE("pixel to viewport")
  	REQUIRE_THAT(t.x ,Catch::Matchers::WithinAbs(.5f, .0005) );
 	REQUIRE_THAT(t.y ,Catch::Matchers::WithinAbs(-.5f, .0005) );
 	REQUIRE_THAT(t.z ,Catch::Matchers::WithinAbs(1.0f, .0005) );
-	/*
-	 * vec3 convert_pixels_to_viewport(const int canvas_x, const int canvas_y, int canvas_w, int canvas_h, vec3 viewport_points)
-	{
-		float c_x_converted = (canvas_x * (viewport_points.x/canvas_w)) -  viewport_points.x/2.0f;
-		float c_y_converted = -1*(canvas_y * (viewport_points.y/canvas_h)) +  viewport_points.y/2.0f;
-
-		return vec3(c_x_converted,c_y_converted,1);
-	}
-	 * */
+}
 
 
+TEST_CASE("simple color creation")
+{
+	color c(-.5f, .4f, 1.7f);
+	REQUIRE_THAT(c.r ,Catch::Matchers::WithinAbs(-.5f, .0005));
+	REQUIRE_THAT(c.g ,Catch::Matchers::WithinAbs(.4f, .0005));
+	REQUIRE_THAT(c.b ,Catch::Matchers::WithinAbs(1.7f, .0005));
 
 }
+
+
+
+TEST_CASE("add colors")
+{
+	color a(.9f, .6f,.75f);
+	color b(.7f, .1f, .25f);
+	color c = color_add(a,b);
+
+	REQUIRE_THAT(c.r ,Catch::Matchers::WithinAbs(1.6f, .0005));
+	REQUIRE_THAT(c.g ,Catch::Matchers::WithinAbs(.7f, .0005));
+	REQUIRE_THAT(c.b ,Catch::Matchers::WithinAbs(1.0f, .0005));
+}
+
+
+TEST_CASE("subtract colors")
+{
+     color a(.9f, .6f,.75f);
+     color b(.7f, .1f, .25f);
+     color c = color_subtraction(a,b);
+
+     REQUIRE_THAT(c.r ,Catch::Matchers::WithinAbs(.2f, .0005));
+     REQUIRE_THAT(c.g ,Catch::Matchers::WithinAbs(.5f, .0005));
+     REQUIRE_THAT(c.b ,Catch::Matchers::WithinAbs(.5f, .0005));
+}
+
+TEST_CASE("scale colors")
+{
+     color a(.2f, .3f,.4f);
+     const float scale = 2.0f; 
+	 color c = color_scaler(a,scale);
+
+     REQUIRE_THAT(c.r ,Catch::Matchers::WithinAbs(.4f, .0005));
+     REQUIRE_THAT(c.g ,Catch::Matchers::WithinAbs(.6f, .0005));
+     REQUIRE_THAT(c.b ,Catch::Matchers::WithinAbs(.8f, .0005));
+}
+
+
+//color color_multiplier(const color lhs, const color rhs);
+TEST_CASE("Multiplying/blending colors")
+{
+	color a(1.0f, .2f,.4f);
+	color b(.9f, 1.f, .1f);
+	color c = color_multiplier(a,b);
+
+	REQUIRE_THAT(c.r ,Catch::Matchers::WithinAbs(.9f, .0005));
+	REQUIRE_THAT(c.g ,Catch::Matchers::WithinAbs(.2f, .0005));
+	REQUIRE_THAT(c.b ,Catch::Matchers::WithinAbs(.04f, .0005));
+
+}
+
+
+TEST_CASE("canvas init")
+{
+	canvas c;
+	REQUIRE(c.width == 240);
+    REQUIRE(c.height == 300);
+	
+	canvas ca(10,20);
+	REQUIRE(ca.width == 10);
+	REQUIRE(ca.height == 20);
+	REQUIRE(ca.canvasvec.size() == (10 * 20));
+
+	//Now we want to loop through the vector and make sure that all of the colors are 0,0,0
+	for(int i = 0; i < 10*20; ++i)
+	{
+		REQUIRE(ca.canvasvec[i].pc.r == 0);
+		REQUIRE(ca.canvasvec[i].pc.g == 0);
+		REQUIRE(ca.canvasvec[i].pc.b == 0);
+
+	}
+
+}
+
+
+TEST_CASE("set and get color for pixel in canvas")
+{
+	canvas c(20,20);
+
+	int x = 10;
+	int y = 10;
+
+	write_pixel(&c, x, y, color(1.0f,0.0f,0.0f));
+
+	//I don't think that we're writing to the correct thing. I think we're writing to a copy.
+	
+	//This is gonna be a problem - checking equality with a float.
+	REQUIRE_THAT(c.canvasvec[y * c.width + x].pc.r ,Catch::Matchers::WithinAbs(1.f, .0005));
+	REQUIRE_THAT(c.canvasvec[y * c.width + x].pc.g ,Catch::Matchers::WithinAbs(0.f, .0005));
+	REQUIRE_THAT(c.canvasvec[y * c.width + x].pc.b ,Catch::Matchers::WithinAbs(0.f, .0005));
+
+	color co = pixel_at(&c, x, y);
+	REQUIRE_THAT(c.canvasvec[y * c.width + x].pc.r ,Catch::Matchers::WithinAbs(co.r, .0005));
+	REQUIRE_THAT(c.canvasvec[y * c.width + x].pc.g ,Catch::Matchers::WithinAbs(co.g, .0005));
+	REQUIRE_THAT(c.canvasvec[y * c.width + x].pc.b ,Catch::Matchers::WithinAbs(co.b, .0005));
+}
+
+
+TEST_CASE("file test")
+{
+	//the header test.
+	canvas c(20,20);
+	canvas_to_ppm(&c);
+	//Let's check that it's open
+	bool open = c.image.is_open();
+
+	REQUIRE(open == 1);
+
+	//We want to read the first 3 lines.
+	bool reading = true;
+	//If one line is different then we change reading to false or something like that. 
+	//We're just testing the first three lines
+	ifstream teststream("image.ppm");
+
+
+	REQUIRE(teststream.is_open());
+
+	string cur;
+
+	getline(teststream, cur);
+
+	REQUIRE(cur == "P3");
+	REQUIRE(reading == true);
+
+	ifstream test("");		
+}
+

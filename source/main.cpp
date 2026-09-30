@@ -10,15 +10,19 @@
 #include <cmath>
 #include "sphere.hpp"
 #include "ray.hpp"
-#include "dimention.hpp"
+
+//Clone the github repo from my github
+//copy all of the contents of my current project over and make sure we can keep on working on it.
+
+
+
 
 using namespace raytracer;
 
-
 int main()
 {
-	dimention width(240);
-	dimention height(300);
+	//I can't name it c cause there would be conflicts in names.
+	canvas can(240,300);
 
 	//Need to fix this viewport vec, cause that just doesn't make sense.
 	const float viewport_distance = 1.0;
@@ -37,17 +41,35 @@ int main()
 	file.open("image.ppm");
 
 	file << "P3\n";
-	file << width.length << " " << height.length << "\n";
+	file << can.width << " " << can.height << "\n";
 	file << "255\n";
 
 	std::string sample = "255 0 0 ";
 	std::string black = "0 0 0 ";
 
+
+
+	for(int c = 0; c < can.height; ++c)
+	{
+		for(int r = 0; r < can.width; ++r)
+		{
+			if (c == 20 && r ==100)
+			{
+				file << sample;
+			}
+			else
+			{
+				file << black;
+			}
+		}
+	}
+	//This is the start
+	/*
 	int hit = 0;
     //PPM expects rows first then columns
-	for (int column = 0; column < height.length; column++)
+	for (int column = 0; column < height.length; ++column)
 	{
-		for (int row = 0; row < width.length; row++)
+		for (int row = 0; row < width.length; ++row)
 		{
 			vec3 h = convert_pixels_to_viewport(row,column,width.length,height.length, viewport_dimentions);
 			ray r;
@@ -80,9 +102,11 @@ int main()
 
 		}
 	}
+	*/
 	file.close();
-	std::cout << hit;
+	//std::cout << hit;
 }
+
 
 
 

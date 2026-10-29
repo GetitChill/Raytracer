@@ -6,14 +6,29 @@
 #pragma once
 struct canvas
 {
-	
+	//so now I want to set all initial colors to 0 or black.
 	canvas(int w, int h) : width{w}, height{h}, canvasvec(w * h)
 	{
-	
+		
+		//I could certainly do this in one loop/
+		for(int i = 0; i < width; ++i)
+		{
+			for(int j = 0; j < height; ++j)
+			{
+				canvasvec[j* width + i] = pixel(i,j, color(0,0,0));
+			}
+		}
+		//We want to set all of the pixels in the canvas to 0,0,0	
 	}
 	canvas() : width{240}, height{300}
 	{
-
+		for(int i = 0; i < width; ++i)
+		{
+			for(int j = 0; j < height; ++j)
+			{
+				canvasvec[j* width + i] = pixel(i,j, color(0,0,0));
+			}
+		}
 	}
 	
 	int width;

@@ -48,7 +48,11 @@ int main()
 	std::string black = "0 0 0 ";
 
 
-
+	int samplex = 100;
+	int sampley = 10;
+	write_pixel(&can, samplex,sampley,color(90,90,200));	
+	std::cout << can.canvasvec[sampley*can.width+samplex].pc.r << " " << can.canvasvec[sampley*can.width+samplex].pc.g << can.canvasvec[sampley*can.width+samplex].pc.b;  
+	//So PPM files like doing it left to right and not top to bottom.
 	for(int c = 0; c < can.height; ++c)
 	{
 		for(int r = 0; r < can.width; ++r)
@@ -56,11 +60,21 @@ int main()
 			if (c == 20 && r ==100)
 			{
 				file << sample;
+				//y * width + x
+				
 			}
 			else
 			{
+
+				//printf("We're not entering\n");
 				file << black;
 			}
+
+			//Now I want to test the color at functions.
+
+
+			//std::cout << can.canvasvec[c*can.width+r].x;
+			//std::cout << "," << can.canvasvec[c*can.width+r].y;
 		}
 	}
 	//This is the start

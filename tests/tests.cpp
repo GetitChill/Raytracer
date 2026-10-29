@@ -291,7 +291,6 @@ TEST_CASE("set and get color for pixel in canvas")
 	REQUIRE_THAT(c.canvasvec[y * c.width + x].pc.b ,Catch::Matchers::WithinAbs(co.b, .0005));
 }
 
-
 TEST_CASE("file test")
 {
 	//the header test.

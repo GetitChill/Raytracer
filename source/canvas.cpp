@@ -1,6 +1,10 @@
 #include "canvas.hpp"
 using namespace raytracer;
 
+
+
+//So I think that this is where we ended. 
+
 void canvas_to_ppm(canvas* c)
 {
 	(*c).image.open("test.txt");
